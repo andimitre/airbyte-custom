@@ -1,0 +1,46 @@
+{{ config(schema="_airbyte_public", tags=["top-level-intermediate"]) }}
+-- SQL model to build a hash column based on the values of this record
+select
+    *,
+    {{ dbt_utils.surrogate_key([
+        adapter.quote('id'),
+        'url',
+        'base',
+        'body',
+        'head',
+        boolean_to_string('draft'),
+        adapter.quote('state'),
+        'title',
+        '_links',
+        array_to_string('labels'),
+        boolean_to_string(adapter.quote('locked')),
+        adapter.quote('number'),
+        'node_id',
+        'user_id',
+        'diff_url',
+        'html_url',
+        array_to_string('assignees'),
+        'closed_at',
+        'issue_url',
+        'merged_at',
+        'patch_url',
+        boolean_to_string('auto_merge'),
+        'created_at',
+        'updated_at',
+        'assignee_id',
+        'commits_url',
+        'comments_url',
+        'milestone_id',
+        'statuses_url',
+        array_to_string('requested_teams'),
+        'merge_commit_sha',
+        'active_lock_reason',
+        'author_association',
+        'review_comment_url',
+        array_to_string('requested_reviewers'),
+        'review_comments_url',
+        '_ab_github_repository',
+    ]) }} as _airbyte_tydo_pull_requests_hashid
+from {{ ref('tydo_pull_requests_ab2') }}
+-- tydo_pull_requests
+
